@@ -17,8 +17,8 @@ namespace MathNet.Numerics.Copulas
             Rho[0,0] = 1;
             Rho[1,1] = 1;
             Rho[2,2] = 1;
-            Rho[0,1] = 0;
-            Rho[1,0] = 0;
+            Rho[0,1] = 0.5;
+            Rho[1,0] = 0.5;
 
             var ThisCopula = new Copulas.GaussianCopula(Rho);
             var samples = ThisCopula.GetSamples(10000);
@@ -26,9 +26,9 @@ namespace MathNet.Numerics.Copulas
             for (var j = 0; j < samples.ColumnCount; ++j)
             {
                 convertedSamples[j] = new double[samples.RowCount];
-                for (var k = 0; k < samples.ColumnCount; ++k)
+                for (var k = 0; k < samples.RowCount; ++k)
                 {
-                    convertedSamples[j][k] = samples[j, k];
+                    convertedSamples[j][k] = samples[k, j];
                 }
             }
 
@@ -38,6 +38,7 @@ namespace MathNet.Numerics.Copulas
             Console.WriteLine("Estimation:");
             Console.WriteLine(correlation.ToString());
             Console.ReadKey();
+
         }
     }
 }

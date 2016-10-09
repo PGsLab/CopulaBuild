@@ -64,7 +64,7 @@ namespace MathNet.Numerics.Copulas
             Matrix<double> result = Matrix<double>.Build.Dense(1, nrVariables);
             var mvnSample = _matrixnormal.Sample();
             for (var m = 0; m < nrVariables; ++m)
-                result[1, m] = _normal.CumulativeDistribution(mvnSample[m, 1]);
+                result[1, m] = _normal.CumulativeDistribution(mvnSample[m, 0]);
             return result;
         }
 

@@ -32,11 +32,10 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace MathNet.Numerics.Copulas
 {
-    public abstract class ArchimedeanCopula : ICopula
+    public abstract class ArchimedeanCopula : Copula
     {
-        public readonly double theta;
+        public readonly double Theta;
         public abstract double Generator(double t);
         public abstract double InverseGenerator(double t);
-        public abstract Matrix<double> GetSamples(int nrSamples);
     }
 }

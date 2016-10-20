@@ -8,6 +8,7 @@ namespace MathNet.Numerics.Copulas
 {
     public interface ICopula
     {
+        Matrix<double> Sample();
         Matrix<double> GetSamples(int nrSamples);
     }
 }

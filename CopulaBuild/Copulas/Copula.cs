@@ -1,4 +1,4 @@
-﻿// <copyright file="GaussianCopula.cs" company="Math.NET">
+﻿// <copyright file="Copula.cs" company="Math.NET">
 // Math.NET Numerics, part of the Math.NET Project
 // http://numerics.mathdotnet.com
 // http://github.com/mathnet/mathnet-numerics
@@ -28,22 +28,25 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.Random;
 
 namespace MathNet.Numerics.Copulas
 {
-    public class GaussianCopula : EllipticalCopula
+    public abstract class Copula
     {
-        public GaussianCopula(Matrix<double> rho) : base(rho)
-        {
-            TransformDist = new Normal(0, 1, RandomSource);
-        }
+        protected int NrVariables;
 
-        public GaussianCopula(Matrix<double> rho, System.Random randomSource) : base(rho, randomSource)
+        public abstract Matrix<double> Sample();
+        public Matrix<double> GetSamples(int nrSamples)
         {
-            TransformDist = new Normal(0, 1, RandomSource);
+            Matrix<double> result = Matrix<double>.Build.Dense(nrSamples, NrVariables);
+            for (var n = 0; n < nrSamples; ++n)
+            {
+                var singleSim = Sample();
+                for (var m = 0; m < NrVariables; ++m)
+                    result[n, m] = singleSim[0, m];
+            }
+            return result;
         }
     }
 }

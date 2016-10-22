@@ -51,8 +51,13 @@
     <Compile Include="Copulas\ClaytonCopula.cs" />
     <Compile Include="Copulas\Copula.cs" />
     <Compile Include="Copulas\EllipticalCopula.cs" />
+    <Compile Include="Copulas\FromKendallCopulaFactory.cs" />
+    <Compile Include="Copulas\FromPearsonCopulaFactory.cs" />
+    <Compile Include="Copulas\FromSpearmanCopulaFactory.cs" />
     <Compile Include="Copulas\GaussianCopula.cs" />
+    <Compile Include="Copulas\GumbelCopula.cs" />
     <Compile Include="Copulas\ICopula.cs" />
+    <Compile Include="Copulas\ICopulaFactory.cs" />
     <Compile Include="Copulas\tCopula.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -29,6 +29,7 @@
 // </copyright>
 
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Random;
 
 namespace MathNet.Numerics.Copulas
 {
@@ -37,5 +38,11 @@ namespace MathNet.Numerics.Copulas
         public double Theta;
         public abstract double Generator(double t);
         public abstract double InverseGenerator(double t);
+
+        protected ArchimedeanCopula(double theta, System.Random randomSource = null)
+        {
+            Theta = theta;
+            RandomSource = randomSource ?? SystemRandomSource.Default;
+        }
     }
 }

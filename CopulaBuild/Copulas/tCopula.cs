@@ -8,13 +8,7 @@ namespace MathNet.Numerics.Copulas
     {
         public double DFreedom { get; protected set; }
 
-        public TCopula(Matrix<double> rho, double dfreedom)
-            : base(rho, TCopula.GetTransFormDist(dfreedom))
-        {
-            DFreedom = dfreedom;
-        }
-
-        public TCopula(Matrix<double> rho, double dfreedom, System.Random randomSource)
+        public TCopula(Matrix<double> rho, double dfreedom, System.Random randomSource = null)
             : base(rho, TCopula.GetTransFormDist(dfreedom), randomSource)
         {
             DFreedom = dfreedom;

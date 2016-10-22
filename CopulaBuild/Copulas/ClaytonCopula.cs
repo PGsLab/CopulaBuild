@@ -5,10 +5,10 @@ namespace MathNet.Numerics.Copulas
 {
     public class ClaytonCopula : ArchimedeanCopula
     {
-        public ClaytonCopula(double theta)
+        public ClaytonCopula(double theta, System.Random randomSource = null) : base(theta, randomSource)
         {
-            Theta = theta;
         }
+
         public override Matrix<double> Sample()
         {
             Matrix<double> result = Matrix<double>.Build.Dense(1, Dimension);
@@ -32,6 +32,11 @@ namespace MathNet.Numerics.Copulas
         public override double InverseGenerator(double t)
         {
             return Math.Pow(1 + Theta * t, -(1/Theta));
+        }
+
+        public static double ThetafromKendall(double rho)
+        {
+            return 2 * rho / (1 - rho);
         }
     }
 }

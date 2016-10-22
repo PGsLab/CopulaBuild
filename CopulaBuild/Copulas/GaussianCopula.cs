@@ -36,12 +36,7 @@ namespace MathNet.Numerics.Copulas
 {
     public class GaussianCopula : EllipticalCopula
     {
-        public GaussianCopula(Matrix<double> rho)
-            : base(rho, GaussianCopula.GetTransFormDist())
-        {
-        }
-
-        public GaussianCopula(Matrix<double> rho, System.Random randomSource)
+        public GaussianCopula(Matrix<double> rho, System.Random randomSource = null)
             : base(rho, GaussianCopula.GetTransFormDist(), randomSource)
         {
         }

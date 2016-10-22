@@ -1,37 +1,43 @@
-﻿using System;
+﻿    using System;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Random;
 
 namespace MathNet.Numerics.Copulas
 {
-    public class EllipticalCopula : Copula
+    public abstract class EllipticalCopula : Copula
     {
         public readonly Matrix<double> Rho;
-        protected readonly System.Random RandomSource = SystemRandomSource.Default;
         private readonly MatrixNormal _matrixnormal;
-        protected IContinuousDistribution TransformDist;
+        private readonly IContinuousDistribution _transformDist;
 
-        public EllipticalCopula(Matrix<double> rho)
+        protected EllipticalCopula(Matrix<double> rho, IContinuousDistribution transformDist)
         {
             //ToDo implement checks
             Rho = rho;
-            NrVariables = Rho.ColumnCount;
-            var mu = Matrix<double>.Build.Sparse(NrVariables, 1);
-            var k = Matrix<double>.Build.Sparse(1, 1, 1.0);
-            _matrixnormal = new MatrixNormal(mu, Rho, k, RandomSource);
-            
+            Dimension = Rho.ColumnCount;
+            _matrixnormal = GetMatrixNormal();
+            _transformDist = transformDist;
+            _transformDist.RandomSource = RandomSource;
         }
-        public EllipticalCopula(Matrix<double> rho, System.Random randomSource) : this(rho)
+
+        protected EllipticalCopula(Matrix<double> rho, IContinuousDistribution transformDist, System.Random randomSource)
+            : this(rho, transformDist)
         {
             RandomSource = randomSource ?? SystemRandomSource.Default;
         }
+        private MatrixNormal GetMatrixNormal()
+        {
+            var mu = Matrix<double>.Build.Sparse(Dimension, 1);
+            var k = Matrix<double>.Build.Sparse(1, 1, 1.0);
+            return new MatrixNormal(mu, Rho, k, RandomSource);
+        }
         public override Matrix<double> Sample()
         {
-            Matrix<double> result = Matrix<double>.Build.Dense(1, NrVariables);
+            Matrix<double> result = Matrix<double>.Build.Dense(1, Dimension);
             var mvnSample = _matrixnormal.Sample();
-            for (var m = 0; m < NrVariables; ++m)
-                result[0, m] = TransformDist.CumulativeDistribution(mvnSample[m, 0]);
+            for (var m = 0; m < Dimension; ++m)
+                result[0, m] = _transformDist.CumulativeDistribution(mvnSample[m, 0]);
             return result;
         }
     }

@@ -34,7 +34,7 @@ namespace MathNet.Numerics.Copulas
 {
     public abstract class ArchimedeanCopula : Copula
     {
-        public readonly double Theta;
+        public double Theta;
         public abstract double Generator(double t);
         public abstract double InverseGenerator(double t);
     }

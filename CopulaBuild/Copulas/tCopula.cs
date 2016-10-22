@@ -6,14 +6,22 @@ namespace MathNet.Numerics.Copulas
 {
     public class TCopula:EllipticalCopula
     {
-        public TCopula(Matrix<double> rho, double dfreedom) : base(rho)
+        public double DFreedom { get; protected set; }
+
+        public TCopula(Matrix<double> rho, double dfreedom)
+            : base(rho, TCopula.GetTransFormDist(dfreedom))
         {
-            TransformDist = new StudentT(0.0,1.0,dfreedom, RandomSource);
+            DFreedom = dfreedom;
         }
 
-        public TCopula(Matrix<double> rho, double dfreedom, System.Random randomSource) : base(rho, randomSource)
+        public TCopula(Matrix<double> rho, double dfreedom, System.Random randomSource)
+            : base(rho, TCopula.GetTransFormDist(dfreedom), randomSource)
         {
-            TransformDist = new StudentT(0.0, 1.0, dfreedom, RandomSource);
+            DFreedom = dfreedom;
+        }
+        private static IContinuousDistribution GetTransFormDist(double dfreedom)
+        {
+            return new StudentT(0.0, 1.0, dfreedom);
         }
     }
 }

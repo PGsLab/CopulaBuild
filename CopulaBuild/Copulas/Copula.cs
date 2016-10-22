@@ -29,21 +29,23 @@
 // </copyright>
 
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.Random;
 
 namespace MathNet.Numerics.Copulas
 {
     public abstract class Copula
     {
-        protected int NrVariables;
+        public int Dimension { get; protected set; }
+        protected System.Random RandomSource = SystemRandomSource.Default;
 
         public abstract Matrix<double> Sample();
         public Matrix<double> GetSamples(int nrSamples)
         {
-            Matrix<double> result = Matrix<double>.Build.Dense(nrSamples, NrVariables);
+            Matrix<double> result = Matrix<double>.Build.Dense(nrSamples, Dimension);
             for (var n = 0; n < nrSamples; ++n)
             {
                 var singleSim = Sample();
-                for (var m = 0; m < NrVariables; ++m)
+                for (var m = 0; m < Dimension; ++m)
                     result[n, m] = singleSim[0, m];
             }
             return result;

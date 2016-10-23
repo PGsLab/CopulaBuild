@@ -7,6 +7,8 @@ namespace MathNet.Numerics.Copulas
     public interface ICopulaFactory
     {
         Copula CreateGaussianCopula(Matrix<double> rho, System.Random randomSource = null);
+        Copula CreateGaussianCopula(double rho, System.Random randomSource = null);
         Copula CreateTCopula(Matrix<double> rho, double dFreedom, System.Random randomSource = null);
+        Copula CreateTCopula(double rho, double dFreedom, System.Random randomSource = null);
     }
 }

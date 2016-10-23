@@ -9,11 +9,23 @@ namespace MathNet.Numerics.Copulas
             Matrix<double> pearsonRho = EllipticalCopula.ConvertSpearmanToPearson(rho);
             return new GaussianCopula(pearsonRho, randomSource);
         }
+        public Copula CreateGaussianCopula(double rho, System.Random randomSource = null)
+        {
+            var matrixRho = EllipticalCopula.CreateCorrMatrixFromDouble(rho);
+            Matrix<double> pearsonRho = EllipticalCopula.ConvertSpearmanToPearson(matrixRho);
+            return new GaussianCopula(pearsonRho, randomSource);
+        }
 
         public Copula CreateTCopula(Matrix<double> rho, double dFreedom, System.Random randomSource = null)
         {
             Matrix<double> pearsonRho = EllipticalCopula.ConvertSpearmanToPearson(rho);
-            return new TCopula(rho, dFreedom, randomSource);
+            return new TCopula(pearsonRho, dFreedom, randomSource);
+        }
+        public Copula CreateTCopula(double rho, double dFreedom, System.Random randomSource = null)
+        {
+            var matrixRho = EllipticalCopula.CreateCorrMatrixFromDouble(rho);
+            Matrix<double> pearsonRho = EllipticalCopula.ConvertSpearmanToPearson(matrixRho);
+            return new TCopula(pearsonRho, dFreedom, randomSource);
         }
 
         public Copula CreateClaytonCopula(double rho, System.Random randomSource = null)

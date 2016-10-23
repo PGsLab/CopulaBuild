@@ -18,8 +18,8 @@ namespace MathNet.Numerics.Copulas
                 result[0, 1] = indepentendUniform;
             else
             {
-                result[0, 1] = result[0, 1]*
-                               Math.Pow(Math.Pow(indepentendUniform, (-Theta)/(1 + Theta)) - 1 + Math.Pow(result[0, 1], Theta),(-1 / Theta));
+                result[0, 1] = result[0, 0]*
+                               Math.Pow(Math.Pow(indepentendUniform, (-Theta)/(1 + Theta)) - 1 + Math.Pow(result[0, 0], Theta),(-1 / Theta));
             }
             return result;
         }

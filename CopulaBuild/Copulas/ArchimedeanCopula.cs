@@ -41,6 +41,7 @@ namespace MathNet.Numerics.Copulas
 
         protected ArchimedeanCopula(double theta, System.Random randomSource = null)
         {
+            Dimension = 2;
             Theta = theta;
             RandomSource = randomSource ?? SystemRandomSource.Default;
         }

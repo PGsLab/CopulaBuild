@@ -42,7 +42,7 @@ namespace MathNet.Numerics.UnitTests.CopulaTests
     [TestFixture, Category("Copulas")]
     public class GaussianCopulaTests
     {
-        private ICopulaFactory _copulaFactory;
+        private IEllipticalCopulaFactory _copulaFactory;
 
         [SetUp]
         public void RunBeforeAnyTests()

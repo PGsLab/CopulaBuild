@@ -3,7 +3,7 @@ using MathNet.Numerics.Random;
 
 namespace MathNet.Numerics.Copulas
 {
-    public class FromPearsonCopulaFactory : ICopulaFactory
+    public class FromPearsonCopulaFactory : IEllipticalCopulaFactory
     {
         public Copula CreateGaussianCopula(Matrix<double> rho, System.Random randomSource = null)
         {

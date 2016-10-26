@@ -101,7 +101,7 @@ namespace MathNet.Numerics.Copulas
         }
 
         [Serializable]
-        public class InvalidCorrelationMatrixException : Exception
+        public class InvalidCorrelationMatrixException : ArgumentException
         {
             public InvalidCorrelationMatrixException()
             {

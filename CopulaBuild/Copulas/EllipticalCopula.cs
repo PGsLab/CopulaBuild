@@ -10,29 +10,38 @@ namespace MathNet.Numerics.Copulas
     public abstract class EllipticalCopula : Copula
     {
         private MatrixNormal _matrixnormal;
-        private readonly IContinuousDistribution _transformDist;
+        private IContinuousDistribution _transformDist;
 
+        protected EllipticalCopula() { }
         protected EllipticalCopula(IContinuousDistribution transformDist)
         {
             _transformDist = transformDist;
             _transformDist.RandomSource = RandomSource;
         }
 
-        protected EllipticalCopula(Matrix<double> rho, IContinuousDistribution transformDist, System.Random randomSource = null)
+        public sealed override System.Random RandomSource
         {
-            if (!IsValidParameterSet(rho))
+            protected set
             {
-                throw new ArgumentException(Resources.InvalidDistributionParameters);
+                base.RandomSource = value;
+                if (_transformDist != null)
+                    _transformDist.RandomSource = value;
             }
-            //ToDo implement checks
-            Rho = rho;
-            
-            RandomSource = randomSource ?? SystemRandomSource.Default;
         }
+
+        protected void SetTransformDist(IContinuousDistribution transformDist)
+        {
+            _transformDist = transformDist;
+        }
+
         public sealed override Matrix<double> Rho
         {
             protected set
             {
+                if (!IsValidParameterSet(value))
+                {
+                    throw new ArgumentException(Resources.InvalidDistributionParameters);
+                }
                 base.Rho = value;
                 Dimension = Rho.ColumnCount;
                 _matrixnormal = GetMatrixNormal();

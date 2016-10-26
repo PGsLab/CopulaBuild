@@ -38,7 +38,8 @@ namespace MathNet.Numerics.Copulas
     {
         public virtual Matrix<double> Rho { get; protected set; }
         public int Dimension { get; protected set; }
-        protected System.Random RandomSource = SystemRandomSource.Default;
+        public virtual System.Random RandomSource { get; protected set; }
+        protected CorrelationType _correlationType;
 
         public abstract Matrix<double> Sample();
         public Matrix<double> GetSamples(int nrSamples)

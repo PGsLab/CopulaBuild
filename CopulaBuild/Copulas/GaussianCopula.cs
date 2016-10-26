@@ -38,9 +38,17 @@ namespace MathNet.Numerics.Copulas
     {
         private GaussianCopula() : base(GaussianCopula.GetTransFormDist()) { }
 
-        public static IBuild SetRho(Matrix<double> rho)
+        public static ICorrelationType Builder()
         {
-            return new Builder(rho);
+            return new InternalBuilder();
+        }
+        public interface ICorrelationType
+        {
+            IRho SetCorrelationType(CorrelationType correlationType);
+        }
+        public interface IRho
+        {
+            IBuild SetRho(Matrix<double> rho);
         }
         public interface IBuild
         {
@@ -48,14 +56,23 @@ namespace MathNet.Numerics.Copulas
             GaussianCopula Build();
         }
 
-        private class Builder : IBuild
+        private class InternalBuilder : IBuild, ICorrelationType, IRho
         {
             private readonly GaussianCopula _instance = new GaussianCopula();
-            public Builder(Matrix<double> rho)
+            public InternalBuilder() { }
+
+            public IBuild SetRho(Matrix<double> rho)
             {
-                _instance.Rho = rho;
+                var pearsonRho = EllipticalCopula.GetPearsonRho(rho, _instance._correlationType);
+                _instance.Rho = pearsonRho;
+                return this;
             }
 
+            public IRho SetCorrelationType(CorrelationType correlationType)
+            {
+                _instance._correlationType = correlationType;
+                return this;
+            }
             public IBuild SetRandomSource(System.Random randomSource)
             {
                 _instance.RandomSource = randomSource;
@@ -65,10 +82,6 @@ namespace MathNet.Numerics.Copulas
             {
                 return _instance;
             }
-        }
-        public GaussianCopula(Matrix<double> rho, System.Random randomSource = null)
-            : base(rho, GaussianCopula.GetTransFormDist(), randomSource)
-        {
         }
 
         private static IContinuousDistribution GetTransFormDist()

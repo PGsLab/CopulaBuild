@@ -42,19 +42,6 @@ namespace MathNet.Numerics.Copulas
         {
             return new InternalBuilder();
         }
-        public interface ICorrelationType
-        {
-            IRho SetCorrelationType(CorrelationType correlationType);
-        }
-        public interface IRho
-        {
-            IBuild SetRho(Matrix<double> rho);
-        }
-        public interface IBuild
-        {
-            IBuild SetRandomSource(System.Random randomSource);
-            GaussianCopula Build();
-        }
 
         private class InternalBuilder : IBuild, ICorrelationType, IRho
         {
@@ -68,6 +55,12 @@ namespace MathNet.Numerics.Copulas
                 return this;
             }
 
+            public IBuild SetRho(double rho)
+            {
+                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
+                return SetRho(matrixRho);
+            }
+
             public IRho SetCorrelationType(CorrelationType correlationType)
             {
                 _instance.CorrelationType = correlationType;
@@ -78,7 +71,7 @@ namespace MathNet.Numerics.Copulas
                 _instance.RandomSource = randomSource;
                 return this;
             }
-            public GaussianCopula Build()
+            public Copula Build()
             {
                 return _instance;
             }

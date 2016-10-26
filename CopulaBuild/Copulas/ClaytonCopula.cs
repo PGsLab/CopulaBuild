@@ -33,26 +33,12 @@ namespace MathNet.Numerics.Copulas
             return Math.Pow(1 + Theta * t, -(1/Theta));
         }
 
-        public static ICorrelationType Builder()
+        public static IRankCorrelationType Builder()
         {
             return new InternalBuilder();
         }
-        public interface ICorrelationType
-        {
-            IRho SetCorrelationType(RankCorrelationType correlationType);
-        }
-        public interface IRho
-        {
-            IBuild SetRho(Matrix<double> rho);
-            IBuild SetRho(double rho);
-        }
-        public interface IBuild
-        {
-            IBuild SetRandomSource(System.Random randomSource);
-            ClaytonCopula Build();
-        }
 
-        private class InternalBuilder : IBuild, ICorrelationType, IRho
+        private class InternalBuilder : IBuild, IRankCorrelationType, IRho
         {
             private readonly ClaytonCopula _instance = new ClaytonCopula();
             public InternalBuilder() { }
@@ -98,7 +84,7 @@ namespace MathNet.Numerics.Copulas
                 _instance.RandomSource = randomSource;
                 return this;
             }
-            public ClaytonCopula Build()
+            public Copula Build()
             {
                 return _instance;
             }

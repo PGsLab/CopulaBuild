@@ -10,26 +10,14 @@ namespace MathNet.Numerics.Copulas
 
         private TCopula() : base() { }
 
-        public static ICorrelationType Builder()
+        public static IDFreedom Builder()
         {
             return new InternalBuilder();
         }
-        public interface ICorrelationType
-        {
-            IRho SetCorrelationType(CorrelationType correlationType);
-        }
-        public interface IRho
-        {
-            IDFreedom SetRho(Matrix<double> rho);
-        }
+
         public interface IDFreedom
         {
-            IBuild SetDFreedom(double dFreedom);
-        }
-        public interface IBuild
-        {
-            IBuild SetRandomSource(System.Random randomSource);
-            TCopula Build();
+            ICorrelationType SetDFreedom(double dFreedom);
         }
 
         private class InternalBuilder : IBuild, ICorrelationType, IRho, IDFreedom
@@ -38,29 +26,34 @@ namespace MathNet.Numerics.Copulas
             public InternalBuilder()
             {
             }
+            public ICorrelationType SetDFreedom(double dFreedom)
+            {
+                _instance.DFreedom = dFreedom;
+                _instance.SetTransformDist(TCopula.GetTransFormDist(dFreedom));
+                return this;
+            }
             public IRho SetCorrelationType(CorrelationType correlationType)
             {
                 _instance.CorrelationType = correlationType;
                 return this;
             }
-            public IDFreedom SetRho(Matrix<double> rho)
+            public IBuild SetRho(Matrix<double> rho)
             {
                 var pearsonRho = EllipticalCopula.GetPearsonRho(rho, _instance.CorrelationType);
                 _instance.Rho = pearsonRho;
                 return this;
             }
-            public IBuild SetDFreedom(double dFreedom)
+            public IBuild SetRho(double rho)
             {
-                _instance.DFreedom = dFreedom;
-                _instance.SetTransformDist(TCopula.GetTransFormDist(dFreedom));
-                return this;
+                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
+                return SetRho(matrixRho);
             }
             public IBuild SetRandomSource(System.Random randomSource)
             {
                 _instance.RandomSource = randomSource;
                 return this;
             }
-            public TCopula Build()
+            public Copula Build()
             {
                 return _instance;
             }

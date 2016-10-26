@@ -22,9 +22,9 @@ namespace MathNet.Numerics.Copulas
             rho[1,0] = 0.5;
 
             var thisCopula = TCopula.Builder()
+                .SetDFreedom(4.5)
                 .SetCorrelationType(CorrelationType.PearsonLinear)
                 .SetRho(rho)
-                .SetDFreedom(4.5)
                 .Build();
             var samples = thisCopula.GetSamples(10000);
             var convertedSamples = ConvertMatrix(samples);

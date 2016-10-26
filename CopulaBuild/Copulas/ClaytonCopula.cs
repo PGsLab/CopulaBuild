@@ -35,62 +35,15 @@ namespace MathNet.Numerics.Copulas
 
         public static IRankCorrelationType Builder()
         {
-            return new InternalBuilder();
+            return new ClaytonBuilder();
         }
 
-        private class InternalBuilder : IBuild, IRankCorrelationType, IRho
+        private class ClaytonBuilder : ArchimedeanBuilder
         {
-            private readonly ClaytonCopula _instance = new ClaytonCopula();
-            public InternalBuilder() { }
-
-            public IRho SetCorrelationType(RankCorrelationType correlationType)
-            {
-                _instance.CorrelationType = (CorrelationType)correlationType;
-                return this;
-            }
-            public IBuild SetRho(Matrix<double> rho)
-            {
-                if (!IsValidParameterSet(rho) || rho.RowCount != 2)
-                {
-                    throw new Copula.InvalidCorrelationMatrixException();
-                }
-                if (_instance.CorrelationType == CorrelationType.KendallRank)
-                    _instance.Theta = ThetafromKendall(rho[0,1]);
-                else
-                {
-                    throw new System.NotImplementedException();
-                }
-                _instance.Rho = rho;
-                return this;
-            }
-            public IBuild SetRho(double rho)
-            {
-                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
-                if (!IsValidParameterSet(matrixRho))
-                {
-                    throw new Copula.InvalidCorrelationMatrixException();
-                }
-                if (_instance.CorrelationType == CorrelationType.KendallRank)
-                    _instance.Theta = ThetafromKendall(rho);
-                else
-                {
-                    throw new System.NotImplementedException();
-                }
-                _instance.Rho = matrixRho;
-                return this;
-            }
-            public IBuild SetRandomSource(System.Random randomSource)
-            {
-                _instance.RandomSource = randomSource;
-                return this;
-            }
-            public Copula Build()
-            {
-                return _instance;
-            }
+            public ClaytonBuilder() : base(new ClaytonCopula()) { }
         }
 
-        public static double ThetafromKendall(double rho)
+        public override double ThetafromKendall(double rho)
         {
             return 2 * rho / (1 - rho);
         }

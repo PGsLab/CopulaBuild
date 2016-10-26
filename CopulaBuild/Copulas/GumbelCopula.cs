@@ -5,6 +5,7 @@ namespace MathNet.Numerics.Copulas
 {
     public class GumbelCopula : ArchimedeanCopula
     {
+        private GumbelCopula() { }
         public GumbelCopula(double theta, System.Random randomSource = null) : base(theta, randomSource)
         {
         }
@@ -24,7 +25,17 @@ namespace MathNet.Numerics.Copulas
             return Math.Exp(Math.Pow(-t,1/Theta));
         }
 
-        public static double ThetafromKendall(double rho)
+        public static IRankCorrelationType Builder()
+        {
+            return new GumbelBuilder();
+        }
+
+        private class GumbelBuilder : ArchimedeanBuilder
+        {
+            public GumbelBuilder() : base(new GumbelCopula()) { }
+        }
+
+        public override double ThetafromKendall(double rho)
         {
             return 1 / (1 - rho);
         }

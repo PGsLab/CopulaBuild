@@ -38,6 +38,7 @@ namespace MathNet.Numerics.Copulas
         public double Theta;
         public abstract double Generator(double t);
         public abstract double InverseGenerator(double t);
+        public abstract double ThetafromKendall(double rho);
         public sealed override System.Random RandomSource
         {
             get { return base.RandomSource; }
@@ -53,6 +54,61 @@ namespace MathNet.Numerics.Copulas
             Dimension = 2;
             Theta = theta;
             RandomSource = randomSource ?? SystemRandomSource.Default;
+        }
+        protected class ArchimedeanBuilder : IBuild, IRankCorrelationType, IRho
+        {
+            private readonly ArchimedeanCopula _instance;
+
+            public ArchimedeanBuilder(ArchimedeanCopula archimedeanCopula)
+            {
+                _instance = archimedeanCopula;
+            }
+
+            public IRho SetCorrelationType(RankCorrelationType correlationType)
+            {
+                _instance.CorrelationType = (CorrelationType)correlationType;
+                return this;
+            }
+            public IBuild SetRho(Matrix<double> rho)
+            {
+                if (!IsValidParameterSet(rho) || rho.RowCount != 2)
+                {
+                    throw new Copula.InvalidCorrelationMatrixException();
+                }
+                if (_instance.CorrelationType == CorrelationType.KendallRank)
+                    _instance.Theta = _instance.ThetafromKendall(rho[0, 1]);
+                else
+                {
+                    throw new System.NotImplementedException();
+                }
+                _instance.Rho = rho;
+                return this;
+            }
+            public IBuild SetRho(double rho)
+            {
+                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
+                if (!IsValidParameterSet(matrixRho))
+                {
+                    throw new Copula.InvalidCorrelationMatrixException();
+                }
+                if (_instance.CorrelationType == CorrelationType.KendallRank)
+                    _instance.Theta = _instance.ThetafromKendall(rho);
+                else
+                {
+                    throw new System.NotImplementedException();
+                }
+                _instance.Rho = matrixRho;
+                return this;
+            }
+            public IBuild SetRandomSource(System.Random randomSource)
+            {
+                _instance.RandomSource = randomSource;
+                return this;
+            }
+            public Copula Build()
+            {
+                return _instance;
+            }
         }
     }
 }

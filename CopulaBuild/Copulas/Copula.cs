@@ -36,7 +36,7 @@ namespace MathNet.Numerics.Copulas
 {
     public abstract class Copula
     {
-        public Matrix<double> Rho { get; protected set; }
+        public virtual Matrix<double> Rho { get; protected set; }
         public int Dimension { get; protected set; }
         protected System.Random RandomSource = SystemRandomSource.Default;
 

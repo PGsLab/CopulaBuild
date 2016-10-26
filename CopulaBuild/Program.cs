@@ -21,28 +21,30 @@ namespace MathNet.Numerics.Copulas
             rho[0,1] = 0.5;
             rho[1,0] = 0.5;
 
-            var thisCopula = new Copulas.TCopula(rho,4.5);
-            var samples = thisCopula.GetSamples(10000);
-            var convertedSamples = ConvertMatrix(samples);
+            //var thisCopula = new Copulas.TCopula(rho,4.5);
+            //var samples = thisCopula.GetSamples(10000);
+            //var convertedSamples = ConvertMatrix(samples);
 
-            var correlation = MathNet.Numerics.Statistics.Correlation.PearsonMatrix(convertedSamples);
-            Console.WriteLine("Rho:");
-            Console.WriteLine(rho.ToString());
-            Console.WriteLine("Estimation:");
-            Console.WriteLine(correlation.ToString());
+            //var correlation = MathNet.Numerics.Statistics.Correlation.PearsonMatrix(convertedSamples);
+            //Console.WriteLine("Rho:");
+            //Console.WriteLine(rho.ToString());
+            //Console.WriteLine("Estimation:");
+            //Console.WriteLine(correlation.ToString());
 
-            var kendallCopulaFactory = new FromKendallCopulaFactory();
-            var corr = 0.3;
-            var claytonC = kendallCopulaFactory.CreateClaytonCopula(corr);
+            //var kendallCopulaFactory = new FromKendallCopulaFactory();
+            //var corr = 0.3;
+            //var claytonC = kendallCopulaFactory.CreateClaytonCopula(corr);
 
-            samples = claytonC.GetSamples(10000);
-            convertedSamples = ConvertMatrix(samples);
+            //samples = claytonC.GetSamples(10000);
+            //convertedSamples = ConvertMatrix(samples);
 
-            correlation = MathNet.Numerics.Statistics.Correlation.PearsonMatrix(convertedSamples);
-            Console.WriteLine("Rho:");
-            Console.WriteLine(corr.ToString());
-            Console.WriteLine("Estimation:");
-            Console.WriteLine(correlation.ToString());
+            //correlation = MathNet.Numerics.Statistics.Correlation.PearsonMatrix(convertedSamples);
+            //Console.WriteLine("Rho:");
+            //Console.WriteLine(corr.ToString());
+            //Console.WriteLine("Estimation:");
+            //Console.WriteLine(correlation.ToString());
+
+            var test = GaussianCopula.SetRho(rho).SetRandomSource(SystemRandomSource.Default).Build();
 
             Console.ReadKey();
         }

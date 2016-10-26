@@ -9,8 +9,14 @@ namespace MathNet.Numerics.Copulas
 {
     public abstract class EllipticalCopula : Copula
     {
-        private readonly MatrixNormal _matrixnormal;
+        private MatrixNormal _matrixnormal;
         private readonly IContinuousDistribution _transformDist;
+
+        protected EllipticalCopula(IContinuousDistribution transformDist)
+        {
+            _transformDist = transformDist;
+            _transformDist.RandomSource = RandomSource;
+        }
 
         protected EllipticalCopula(Matrix<double> rho, IContinuousDistribution transformDist, System.Random randomSource = null)
         {
@@ -20,11 +26,17 @@ namespace MathNet.Numerics.Copulas
             }
             //ToDo implement checks
             Rho = rho;
-            Dimension = Rho.ColumnCount;
+            
             RandomSource = randomSource ?? SystemRandomSource.Default;
-            _matrixnormal = GetMatrixNormal();
-            _transformDist = transformDist;
-            _transformDist.RandomSource = RandomSource;
+        }
+        public sealed override Matrix<double> Rho
+        {
+            protected set
+            {
+                base.Rho = value;
+                Dimension = Rho.ColumnCount;
+                _matrixnormal = GetMatrixNormal();
+            }
         }
 
         private MatrixNormal GetMatrixNormal()
@@ -40,6 +52,26 @@ namespace MathNet.Numerics.Copulas
             for (var m = 0; m < Dimension; ++m)
                 result[0, m] = _transformDist.CumulativeDistribution(mvnSample[m, 0]);
             return result;
+        }
+
+        public static Matrix<double> GetPearsonRho(Matrix<double> rho, CorrelationType correlationType)
+        {
+            Matrix<double> pearsonRho;
+            switch (correlationType)
+            {
+                case CorrelationType.PearsonLinear:
+                    pearsonRho = rho;
+                    break;
+                case CorrelationType.KendallRank:
+                    pearsonRho = EllipticalCopula.ConvertKendallToPearson(rho);
+                    break;
+                case CorrelationType.SpearmanRank:
+                    pearsonRho = EllipticalCopula.ConvertSpearmanToPearson(rho);
+                    break;
+                default:
+                    throw new System.ArgumentException();
+            }
+            return pearsonRho;
         }
 
         public static double ConvertKendallToPearson(double rho)

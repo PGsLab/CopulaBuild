@@ -36,10 +36,17 @@ namespace MathNet.Numerics.Copulas
 {
     public abstract class Copula
     {
+        private System.Random _randomSource = SystemRandomSource.Default;
         public virtual Matrix<double> Rho { get; protected set; }
         public int Dimension { get; protected set; }
-        public virtual System.Random RandomSource { get; protected set; }
-        protected CorrelationType _correlationType;
+
+        public virtual System.Random RandomSource
+        {
+            get { return _randomSource; }
+            protected set { _randomSource = value; }
+        }
+
+        public CorrelationType CorrelationType { get; protected set; }
 
         public abstract Matrix<double> Sample();
         public Matrix<double> GetSamples(int nrSamples)
@@ -52,6 +59,63 @@ namespace MathNet.Numerics.Copulas
                     result[n, m] = singleSim[0, m];
             }
             return result;
+        }
+
+        /// <summary>
+        /// Tests whether the provided values are valid parameters for these Copulas.
+        /// </summary>
+        /// <param name="rho">The correlation matrix.</param>
+        public static bool IsValidParameterSet(Matrix<double> rho)
+        {
+            var n = rho.RowCount;
+            var p = rho.ColumnCount;
+
+            for (var i = 0; i < rho.RowCount; i++)
+            {
+                if (!rho.At(i, i).Equals(1.0))
+                {
+                    return false;
+                }
+            }
+
+            for (var i = 0; i < rho.RowCount; i++)
+            {
+                for (var j = i + 1; j < rho.ColumnCount; j++)
+                {
+                    if (!rho.At(i, j).AlmostEqual(rho.At(j, i)) || rho.At(i, j) <= -1 || rho.At(i, j) >= 1)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public static Matrix<double> CreateCorrMatrixFromDouble(double rho)
+        {
+            var result = Matrix<double>.Build.DenseDiagonal(2, 2, 1);
+            result[0, 1] = rho;
+            result[1, 0] = rho;
+            return result;
+        }
+
+        [Serializable]
+        public class InvalidCorrelationMatrixException : Exception
+        {
+            public InvalidCorrelationMatrixException()
+            {
+            }
+
+            public InvalidCorrelationMatrixException(string message)
+                : base(message)
+            {
+            }
+
+            public InvalidCorrelationMatrixException(string message, Exception inner)
+                : base(message, inner)
+            {
+            }
         }
     }
 }

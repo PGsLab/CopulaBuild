@@ -38,9 +38,9 @@ namespace MathNet.Numerics.Copulas
         {
             protected set
             {
-                if (!IsValidParameterSet(value))
+                if (!Copula.IsValidParameterSet(value))
                 {
-                    throw new ArgumentException(Resources.InvalidDistributionParameters);
+                    throw new Copula.InvalidCorrelationMatrixException();
                 }
                 base.Rho = value;
                 Dimension = Rho.ColumnCount;
@@ -115,45 +115,6 @@ namespace MathNet.Numerics.Copulas
                 }
             }
             return pearsonRho;
-        }
-
-        public static Matrix<double> CreateCorrMatrixFromDouble(double rho)
-        {
-            var result = Matrix<double>.Build.DenseDiagonal(2, 2, 1);
-            result[0, 1] = rho;
-            result[1, 0] = rho;
-            return result;
-        }
-
-        /// <summary>
-        /// Tests whether the provided values are valid parameters for these Copulas.
-        /// </summary>
-        /// <param name="rho">The correlation matrix.</param>
-        public static bool IsValidParameterSet(Matrix<double> rho)
-        {
-            var n = rho.RowCount;
-            var p = rho.ColumnCount;
-
-            for (var i = 0; i < rho.RowCount; i++)
-            {
-                if (!rho.At(i, i).Equals(1.0))
-                {
-                    return false;
-                }
-            }
-
-            for (var i = 0; i < rho.RowCount; i++)
-            {
-                for (var j = i+1; j < rho.ColumnCount; j++)
-                {
-                    if (!rho.At(i, j).AlmostEqual(rho.At(j,i)) || rho.At(i, j) <= -1 || rho.At(i, j) >= 1)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
         }
     }
 }

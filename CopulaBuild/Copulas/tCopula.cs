@@ -40,12 +40,12 @@ namespace MathNet.Numerics.Copulas
             }
             public IRho SetCorrelationType(CorrelationType correlationType)
             {
-                _instance._correlationType = correlationType;
+                _instance.CorrelationType = correlationType;
                 return this;
             }
             public IDFreedom SetRho(Matrix<double> rho)
             {
-                var pearsonRho = EllipticalCopula.GetPearsonRho(rho, _instance._correlationType);
+                var pearsonRho = EllipticalCopula.GetPearsonRho(rho, _instance.CorrelationType);
                 _instance.Rho = pearsonRho;
                 return this;
             }

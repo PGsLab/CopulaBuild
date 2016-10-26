@@ -5,9 +5,8 @@ namespace MathNet.Numerics.Copulas
 {
     public class ClaytonCopula : ArchimedeanCopula
     {
-        public ClaytonCopula(double theta, System.Random randomSource = null) : base(theta, randomSource)
-        {
-        }
+        private ClaytonCopula() { }
+        public ClaytonCopula(double theta, System.Random randomSource = null) : base(theta, randomSource) { }
 
         public override Matrix<double> Sample()
         {
@@ -32,6 +31,77 @@ namespace MathNet.Numerics.Copulas
         public override double InverseGenerator(double t)
         {
             return Math.Pow(1 + Theta * t, -(1/Theta));
+        }
+
+        public static ICorrelationType Builder()
+        {
+            return new InternalBuilder();
+        }
+        public interface ICorrelationType
+        {
+            IRho SetCorrelationType(RankCorrelationType correlationType);
+        }
+        public interface IRho
+        {
+            IBuild SetRho(Matrix<double> rho);
+            IBuild SetRho(double rho);
+        }
+        public interface IBuild
+        {
+            IBuild SetRandomSource(System.Random randomSource);
+            ClaytonCopula Build();
+        }
+
+        private class InternalBuilder : IBuild, ICorrelationType, IRho
+        {
+            private readonly ClaytonCopula _instance = new ClaytonCopula();
+            public InternalBuilder() { }
+
+            public IRho SetCorrelationType(RankCorrelationType correlationType)
+            {
+                _instance.CorrelationType = (CorrelationType)correlationType;
+                return this;
+            }
+            public IBuild SetRho(Matrix<double> rho)
+            {
+                if (!IsValidParameterSet(rho) || rho.RowCount != 2)
+                {
+                    throw new Copula.InvalidCorrelationMatrixException();
+                }
+                if (_instance.CorrelationType == CorrelationType.KendallRank)
+                    _instance.Theta = ThetafromKendall(rho[0,1]);
+                else
+                {
+                    throw new System.NotImplementedException();
+                }
+                _instance.Rho = rho;
+                return this;
+            }
+            public IBuild SetRho(double rho)
+            {
+                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
+                if (!IsValidParameterSet(matrixRho))
+                {
+                    throw new Copula.InvalidCorrelationMatrixException();
+                }
+                if (_instance.CorrelationType == CorrelationType.KendallRank)
+                    _instance.Theta = ThetafromKendall(rho);
+                else
+                {
+                    throw new System.NotImplementedException();
+                }
+                _instance.Rho = matrixRho;
+                return this;
+            }
+            public IBuild SetRandomSource(System.Random randomSource)
+            {
+                _instance.RandomSource = randomSource;
+                return this;
+            }
+            public ClaytonCopula Build()
+            {
+                return _instance;
+            }
         }
 
         public static double ThetafromKendall(double rho)

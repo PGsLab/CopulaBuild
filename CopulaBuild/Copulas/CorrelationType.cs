@@ -2,17 +2,17 @@
 {
     public enum CorrelationType
     {
-        PearsonLinear,
-        KendallRank,
-        SpearmanRank,
+        PearsonLinear = 0,
+        KendallRank = 1,
+        SpearmanRank = 2,
     }
     public enum RankCorrelationType
     {
-        KendallRank,
-        SpearmanRank,
+        KendallRank = 1,
+        SpearmanRank = 2,
     }
     public enum LinearCorrelationType
     {
-        PearsonLinear,
+        PearsonLinear = 0,
     }
 }

@@ -63,14 +63,14 @@ namespace MathNet.Numerics.Copulas
 
             public IBuild SetRho(Matrix<double> rho)
             {
-                var pearsonRho = EllipticalCopula.GetPearsonRho(rho, _instance._correlationType);
+                var pearsonRho = EllipticalCopula.GetPearsonRho(rho, _instance.CorrelationType);
                 _instance.Rho = pearsonRho;
                 return this;
             }
 
             public IRho SetCorrelationType(CorrelationType correlationType)
             {
-                _instance._correlationType = correlationType;
+                _instance.CorrelationType = correlationType;
                 return this;
             }
             public IBuild SetRandomSource(System.Random randomSource)

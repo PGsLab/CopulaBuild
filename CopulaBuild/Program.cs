@@ -35,24 +35,21 @@ namespace MathNet.Numerics.Copulas
             Console.WriteLine("Estimation:");
             Console.WriteLine(correlation.ToString());
 
-            //var kendallCopulaFactory = new FromKendallCopulaFactory();
-            //var corr = 0.3;
-            //var claytonC = kendallCopulaFactory.CreateClaytonCopula(corr);
-
-            //samples = claytonC.GetSamples(10000);
-            //convertedSamples = ConvertMatrix(samples);
-
-            //correlation = MathNet.Numerics.Statistics.Correlation.PearsonMatrix(convertedSamples);
-            //Console.WriteLine("Rho:");
-            //Console.WriteLine(corr.ToString());
-            //Console.WriteLine("Estimation:");
-            //Console.WriteLine(correlation.ToString());
-
-            var test = GaussianCopula.Builder()
-                .SetCorrelationType(CorrelationType.PearsonLinear)
-                .SetRho(rho)
-                .SetRandomSource(SystemRandomSource.Default)
+            var corr = 0.3;
+            var claytonC =
+                ClaytonCopula.Builder()
+                .SetCorrelationType(RankCorrelationType.KendallRank)
+                .SetRho(corr)
                 .Build();
+
+            samples = claytonC.GetSamples(10000);
+            convertedSamples = ConvertMatrix(samples);
+
+            correlation = MathNet.Numerics.Statistics.Correlation.PearsonMatrix(convertedSamples);
+            Console.WriteLine("Rho:");
+            Console.WriteLine(corr.ToString());
+            Console.WriteLine("Estimation:");
+            Console.WriteLine(correlation.ToString());
 
             Console.ReadKey();
         }

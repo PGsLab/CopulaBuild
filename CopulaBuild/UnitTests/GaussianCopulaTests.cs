@@ -69,6 +69,49 @@ namespace MathNet.Numerics.UnitTests.CopulaTests
             Assert.AreEqual(rho, g.Rho[1, 0]);
         }
 
+        /// <summary>
+        /// Can create Gaussian Copulas from Spearman Rank Rho.
+        /// </summary>
+        /// <param name="rho">Rho value.</param>
+        /// /// <param name="transformedRho">Rho value after transformation to Pearson linear.</param>
+        [TestCase(new double[] { 1, 0.5, 0.5, 1 }, new double[] { 1, 0.517638090205041, 0.517638090205041, 1 })]
+        [TestCase(new double[] { 1, 0.5, 0.1, 0.5, 1, 0, 0.1, 0, 1 },
+            new double[] { 1, 0.517638090205041, 0.104671912485888, 0.517638090205041, 1, 0, 0.104671912485888, 0, 1 })]
+        public void CanCreateGaussianFromSpearman(double[] rho, double[] transformedRho)
+        {
+            var size = (int)Math.Sqrt(rho.GetLength(0));
+            var matrixRho = Matrix<double>.Build.DenseOfColumnMajor(size, size, rho);
+            var matrixtransformedRho = Matrix<double>.Build.DenseOfColumnMajor(size, size, transformedRho);
+            var g = GaussianCopula.Builder().SetCorrelationType(CorrelationType.SpearmanRank).SetRho(matrixRho).Build();
+            Assert.AreEqual(size, g.Dimension);
+            for (var i = 0; i < size; ++i)
+            {
+                for (var j = 0; j < size; ++j)
+                    Assert.True(matrixtransformedRho[i,j].AlmostEqual(g.Rho[i,j],10));
+            }
+        }
+
+        /// <summary>
+        /// Can create Gaussian Copulas from Kendall Tau Rho.
+        /// </summary>
+        /// <param name="rho">Rho value.</param>
+        /// /// <param name="transformedRho">Rho value after transformation to Pearson linear.</param>
+        [TestCase(new double[] { 1, 0.5, 0.5, 1 }, new double[] { 1, 0.707106781186547, 0.707106781186547, 1 })]
+        [TestCase(new double[] { 1, 0.5, 0.1, 0.5, 1, 0, 0.1, 0, 1 },
+            new double[] { 1, 0.707106781186547, 0.156434465040231, 0.707106781186547, 1, 0, 0.156434465040231, 0, 1 })]
+        public void CanCreateGaussianFromKendall(double[] rho, double[] transformedRho)
+        {
+            var size = (int)Math.Sqrt(rho.GetLength(0));
+            var matrixRho = Matrix<double>.Build.DenseOfColumnMajor(size, size, rho);
+            var matrixtransformedRho = Matrix<double>.Build.DenseOfColumnMajor(size, size, transformedRho);
+            var g = GaussianCopula.Builder().SetCorrelationType(CorrelationType.KendallRank).SetRho(matrixRho).Build();
+            Assert.AreEqual(size, g.Dimension);
+            for (var i = 0; i < size; ++i)
+            {
+                for (var j = 0; j < size; ++j)
+                    Assert.True(matrixtransformedRho[i, j].AlmostEqual(g.Rho[i, j], 10));
+            }
+        }
 
         /// <summary>
         /// GaussianCopula create fails with bad parameter.

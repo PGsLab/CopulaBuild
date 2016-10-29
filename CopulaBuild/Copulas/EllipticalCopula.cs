@@ -95,11 +95,13 @@ namespace MathNet.Numerics.Copulas
         public static Matrix<double> ConvertKendallToPearson(Matrix<double> rho)
         {
             Matrix<double> pearsonRho = Matrix<double>.Build.Dense(rho.RowCount, rho.ColumnCount);
+            pearsonRho.SetDiagonal(Vector<double>.Build.Dense(pearsonRho.RowCount,1));
             for (int i = 0; i < rho.RowCount; ++i)
             {
                 for (int j = 0; j < rho.ColumnCount; ++j)
                 {
-                    pearsonRho[i, j] = ConvertKendallToPearson(rho[i, j]);
+                    if (i != j)
+                        pearsonRho[i, j] = ConvertKendallToPearson(rho[i, j]);
                 }
             }
             return pearsonRho;
@@ -107,11 +109,13 @@ namespace MathNet.Numerics.Copulas
         public static Matrix<double> ConvertSpearmanToPearson(Matrix<double> rho)
         {
             Matrix<double> pearsonRho = Matrix<double>.Build.Dense(rho.RowCount, rho.ColumnCount);
+            pearsonRho.SetDiagonal(Vector<double>.Build.Dense(pearsonRho.RowCount, 1));
             for (int i = 0; i < rho.RowCount; ++i)
             {
                 for (int j = 0; j < rho.ColumnCount; ++j)
                 {
-                    pearsonRho[i, j] = ConvertSpearmanToPearson(rho[i, j]);
+                    if (i != j)
+                        pearsonRho[i, j] = ConvertSpearmanToPearson(rho[i, j]);
                 }
             }
             return pearsonRho;

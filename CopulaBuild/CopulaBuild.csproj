@@ -61,7 +61,7 @@
     <Compile Include="Copulas\GaussianCopula.cs" />
     <Compile Include="Copulas\GumbelCopula.cs" />
     <Compile Include="Copulas\ICopula.cs" />
-    <Compile Include="Copulas\TCopula.cs" />
+    <Compile Include="Copulas\tCopula.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\GaussianCopulaTests.cs" />

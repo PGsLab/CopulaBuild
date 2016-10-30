@@ -4,11 +4,11 @@ using MathNet.Numerics.Random;
 
 namespace MathNet.Numerics.Copulas
 {
-    public class TCopula:EllipticalCopula
+    public class tCopula:EllipticalCopula
     {
         public double DFreedom { get; protected set; }
 
-        private TCopula() : base() { }
+        private tCopula() : base() { }
 
         public static IDFreedom Builder()
         {
@@ -22,14 +22,14 @@ namespace MathNet.Numerics.Copulas
 
         private class InternalBuilder : IBuild, ICorrelationType, IRho, IDFreedom
         {
-            private readonly TCopula _instance = new TCopula();
+            private readonly tCopula _instance = new tCopula();
             public InternalBuilder()
             {
             }
             public ICorrelationType SetDFreedom(double dFreedom)
             {
                 _instance.DFreedom = dFreedom;
-                _instance.SetTransformDist(TCopula.GetTransFormDist(dFreedom));
+                _instance.SetTransformDist(tCopula.GetTransFormDist(dFreedom));
                 return this;
             }
             public IRho SetCorrelationType(CorrelationType correlationType)

@@ -3,9 +3,9 @@
 // http://numerics.mathdotnet.com
 // http://github.com/mathnet/mathnet-numerics
 // http://mathnetnumerics.codeplex.com
-// 
+//
 // Copyright (c) 2009-2016 Math.NET
-// 
+//
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -14,10 +14,10 @@
 // copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following
 // conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -28,9 +28,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 
-using System;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Random;
+using System;
+using System.Collections.Generic;
 
 namespace MathNet.Numerics.Copulas
 {
@@ -48,16 +49,19 @@ namespace MathNet.Numerics.Copulas
 
         public CorrelationType CorrelationType { get; protected set; }
 
-        public abstract Matrix<double> Sample();
-        public Matrix<double> GetSamples(int nrSamples)
+        public abstract double[] Sample();
+
+        public IEnumerable<double[]> GetSamples(int nrSamples)
+        {
+            for (var n = 0; n < nrSamples; ++n)
+                yield return Sample();
+        }
+
+        public Matrix<double> GetSampleMatrix(int nrSamples)
         {
             Matrix<double> result = Matrix<double>.Build.Dense(nrSamples, Dimension);
             for (var n = 0; n < nrSamples; ++n)
-            {
-                var singleSim = Sample();
-                for (var m = 0; m < Dimension; ++m)
-                    result[n, m] = singleSim[0, m];
-            }
+                result.SetRow(n, Sample());
             return result;
         }
 
@@ -73,9 +77,7 @@ namespace MathNet.Numerics.Copulas
             for (var i = 0; i < rho.RowCount; i++)
             {
                 if (!rho.At(i, i).Equals(1.0))
-                {
                     return false;
-                }
             }
 
             for (var i = 0; i < rho.RowCount; i++)
@@ -83,16 +85,13 @@ namespace MathNet.Numerics.Copulas
                 for (var j = i + 1; j < rho.ColumnCount; j++)
                 {
                     if (!rho.At(i, j).AlmostEqual(rho.At(j, i)) || rho.At(i, j) <= -1 || rho.At(i, j) >= 1)
-                    {
                         return false;
-                    }
                 }
             }
-
             return true;
         }
 
-        public static Matrix<double> CreateCorrMatrixFromDouble(double rho)
+        public static Matrix<double> CreateCorrelationMatrixFromDouble(double rho)
         {
             var result = Matrix<double>.Build.DenseDiagonal(2, 2, 1);
             result[0, 1] = rho;

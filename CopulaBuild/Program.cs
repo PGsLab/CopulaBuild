@@ -26,7 +26,7 @@ namespace MathNet.Numerics.Copulas
                 .SetCorrelationType(CorrelationType.PearsonLinear)
                 .SetRho(rho)
                 .Build();
-            var samples = thisCopula.GetSamples(10000);
+            var samples = thisCopula.GetSampleMatrix(10000);
             var convertedSamples = ConvertMatrix(samples);
 
             var correlation = MathNet.Numerics.Statistics.Correlation.PearsonMatrix(convertedSamples);
@@ -42,7 +42,7 @@ namespace MathNet.Numerics.Copulas
                 .SetRho(corr)
                 .Build();
 
-            samples = claytonC.GetSamples(10000);
+            samples = claytonC.GetSampleMatrix(10000);
             convertedSamples = ConvertMatrix(samples);
 
             correlation = MathNet.Numerics.Statistics.Correlation.SpearmanMatrix(convertedSamples);

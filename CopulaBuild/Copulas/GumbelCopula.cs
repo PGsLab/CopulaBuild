@@ -1,28 +1,30 @@
-﻿using System;
-using MathNet.Numerics.LinearAlgebra;
+﻿using static System.Math;
 
 namespace MathNet.Numerics.Copulas
 {
     public class GumbelCopula : ArchimedeanCopula
     {
-        private GumbelCopula() { }
+        private GumbelCopula()
+        {
+        }
+
         public GumbelCopula(double theta, System.Random randomSource = null) : base(theta, randomSource)
         {
         }
 
-        public override Matrix<double> Sample()
+        public override double[] Sample()
         {
             throw new System.NotImplementedException();
         }
 
         public override double Generator(double t)
         {
-            return Math.Pow(-Math.Log(t),Theta);
+            return Pow(-Log(t), Theta);
         }
 
         public override double InverseGenerator(double t)
         {
-            return Math.Exp(Math.Pow(-t,1/Theta));
+            return Exp(Pow(-t, 1 / Theta));
         }
 
         public static IRankCorrelationType Builder()
@@ -32,7 +34,9 @@ namespace MathNet.Numerics.Copulas
 
         private class GumbelBuilder : ArchimedeanBuilder
         {
-            public GumbelBuilder() : base(new GumbelCopula()) { }
+            public GumbelBuilder() : base(new GumbelCopula())
+            {
+            }
         }
 
         public override double ThetafromKendall(double rho)

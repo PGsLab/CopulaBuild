@@ -8,6 +8,10 @@ namespace MathNet.Numerics.Copulas
     {
         public double DFreedom { get; protected set; }
 
+        public tCopula(double dFreedom, Matrix<double> rho, CorrelationType correlationType, RandomSource randomSource = null) : base(rho, correlationType, randomSource, tCopula.GetTransFormDist(dFreedom))
+        {
+            DFreedom = dFreedom;
+        }
         private tCopula() : base() { }
 
         public static IDFreedom Builder()
@@ -45,7 +49,7 @@ namespace MathNet.Numerics.Copulas
             }
             public IBuild SetRho(double rho)
             {
-                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
+                var matrixRho = Copula.CreateCorrelationMatrixFromDouble(rho);
                 return SetRho(matrixRho);
             }
             public IBuild SetRandomSource(System.Random randomSource)

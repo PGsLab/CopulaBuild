@@ -18,7 +18,12 @@ namespace MathNet.Numerics.Copulas
             _transformDist = transformDist;
             _transformDist.RandomSource = RandomSource;
         }
-
+        protected EllipticalCopula(Matrix<double> rho, CorrelationType correlationType, RandomSource randomSource, IContinuousDistribution transformDist) : this(transformDist)
+        {
+            Rho = EllipticalCopula.GetPearsonRho(rho, correlationType);
+            if (randomSource != null)
+                RandomSource = randomSource;
+        }
         public sealed override System.Random RandomSource
         {
             protected set
@@ -50,16 +55,16 @@ namespace MathNet.Numerics.Copulas
 
         private MatrixNormal GetMatrixNormal()
         {
-            var mu = Matrix<double>.Build.Sparse(Dimension, 1);
-            var k = Matrix<double>.Build.Sparse(1, 1, 1.0);
+            var mu = Matrix<double>.Build.Dense(Dimension, 1);
+            var k = Matrix<double>.Build.Dense(1, 1, 1.0);
             return new MatrixNormal(mu, Rho, k, RandomSource);
         }
-        public override Matrix<double> Sample()
+        public override double[] Sample()
         {
-            Matrix<double> result = Matrix<double>.Build.Dense(1, Dimension);
+            var result = new double[Dimension];
             var mvnSample = _matrixnormal.Sample();
             for (var m = 0; m < Dimension; ++m)
-                result[0, m] = _transformDist.CumulativeDistribution(mvnSample[m, 0]);
+                result[m] = _transformDist.CumulativeDistribution(mvnSample[m, 0]);
             return result;
         }
 

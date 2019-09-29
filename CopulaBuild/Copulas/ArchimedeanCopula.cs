@@ -86,7 +86,7 @@ namespace MathNet.Numerics.Copulas
             }
             public IBuild SetRho(double rho)
             {
-                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
+                var matrixRho = Copula.CreateCorrelationMatrixFromDouble(rho);
                 if (!IsValidParameterSet(matrixRho))
                 {
                     throw new Copula.InvalidCorrelationMatrixException();

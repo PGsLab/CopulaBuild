@@ -36,6 +36,10 @@ namespace MathNet.Numerics.Copulas
 {
     public class GaussianCopula : EllipticalCopula
     {
+        public GaussianCopula(Matrix<double> rho, CorrelationType correlationType, RandomSource randomSource = null) : base(rho, correlationType, randomSource, GaussianCopula.GetTransFormDist())
+        {
+            
+        }
         private GaussianCopula() : base(GaussianCopula.GetTransFormDist()) { }
 
         public static ICorrelationType Builder()
@@ -57,7 +61,7 @@ namespace MathNet.Numerics.Copulas
 
             public IBuild SetRho(double rho)
             {
-                var matrixRho = Copula.CreateCorrMatrixFromDouble(rho);
+                var matrixRho = Copula.CreateCorrelationMatrixFromDouble(rho);
                 return SetRho(matrixRho);
             }
 

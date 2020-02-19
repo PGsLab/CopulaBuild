@@ -29,12 +29,13 @@
 
 using System;
 using System.Linq;
+using MathNet.Numerics;
 using MathNet.Numerics.Copulas;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 
-namespace MathNet.Numerics.UnitTests.CopulaTests
+namespace CopulaTests
 {
     /// <summary>
     /// Gaussian Copula distribution tests.
@@ -60,6 +61,7 @@ namespace MathNet.Numerics.UnitTests.CopulaTests
         /// Can create Gaussian Copulas.
         /// </summary>
         /// <param name="rho">Rho value.</param>
+        [TestCase(0.0)]
         [TestCase(0.5)]
         public void CanCreateGaussianFromDouble(double rho)
         {
@@ -92,7 +94,7 @@ namespace MathNet.Numerics.UnitTests.CopulaTests
         }
 
         /// <summary>
-        /// Can create Gaussian Copulas from Kendall Tau Rho.
+        /// Can create Gaussian Copulas from Kendall's Tau Rho.
         /// </summary>
         /// <param name="rho">Rho value.</param>
         /// /// <param name="transformedRho">Rho value after transformation to Pearson linear.</param>

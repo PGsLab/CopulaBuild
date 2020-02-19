@@ -35,28 +35,56 @@ using System.Collections.Generic;
 
 namespace MathNet.Numerics.Copulas
 {
-    public abstract class Copula
+    public abstract partial class Copula
     {
-        private System.Random _randomSource = SystemRandomSource.Default;
-        public virtual Matrix<double> Rho { get; protected set; }
-        public int Dimension { get; protected set; }
+        protected System.Random _randomSource = SystemRandomSource.Default;
 
+        /// <summary>
+        /// Gets the underlying correlation matrix of the copula.
+        /// </summary>
+        public virtual Matrix<double> Rho { get; protected set; }
+
+        /// <summary>
+        /// Gets the dimension of the underlying correlation matrix of the copula.
+        /// </summary>
+        public int Dimension { get { return Rho.RowCount; } }
+
+        /// <summary>
+        /// Gets the random number generator which is used to draw random samples.
+        /// </summary>
         public virtual System.Random RandomSource
         {
             get { return _randomSource; }
-            protected set { _randomSource = value; }
+            set { _randomSource = value ?? SystemRandomSource.Default; }
         }
 
+        /// <summary>
+        /// Gets the correlation type the underlying correlation matrix of the copula.
+        /// </summary>
         public CorrelationType CorrelationType { get; protected set; }
 
+        /// <summary>
+        /// Generates a correlated uniform sample corresponding to the parametrized copula.
+        /// </summary>
+        /// <returns>a correlated sample from the copula.</returns>
         public abstract double[] Sample();
 
-        public IEnumerable<double[]> GetSamples(int nrSamples)
+        /// <summary>
+        /// Generates a sequence of correlated uniform samples corresponding to the parametrized copula.
+        /// </summary>
+        /// <param name="nrSamples">The desired number of samples.</param>
+        /// <returns>a sequence of correlated samples from the copula.</returns>
+        public IEnumerable<double[]> Samples(int nrSamples)
         {
             for (var n = 0; n < nrSamples; ++n)
                 yield return Sample();
         }
 
+        /// <summary>
+        /// Generates a matrix filled with correlated uniform samples corresponding to the parametrized copula.
+        /// </summary>
+        /// <param name="nrSamples">The desired number of samples.</param>
+        /// <returns>a matrix of correlated samples from the copula, where each row corresponds to one uniform sample.</returns>
         public Matrix<double> GetSampleMatrix(int nrSamples)
         {
             Matrix<double> result = Matrix<double>.Build.Dense(nrSamples, Dimension);
@@ -66,7 +94,7 @@ namespace MathNet.Numerics.Copulas
         }
 
         /// <summary>
-        /// Tests whether the provided values are valid parameters for these Copulas.
+        /// Tests whether the provided values are valid parameters for the copula.
         /// </summary>
         /// <param name="rho">The correlation matrix.</param>
         public static bool IsValidParameterSet(Matrix<double> rho)
@@ -91,30 +119,12 @@ namespace MathNet.Numerics.Copulas
             return true;
         }
 
-        public static Matrix<double> CreateCorrelationMatrixFromDouble(double rho)
+        protected static Matrix<double> CreateCorrelationMatrixFromDouble(double rho)
         {
             var result = Matrix<double>.Build.DenseDiagonal(2, 2, 1);
             result[0, 1] = rho;
             result[1, 0] = rho;
             return result;
-        }
-
-        [Serializable]
-        public class InvalidCorrelationMatrixException : ArgumentException
-        {
-            public InvalidCorrelationMatrixException()
-            {
-            }
-
-            public InvalidCorrelationMatrixException(string message)
-                : base(message)
-            {
-            }
-
-            public InvalidCorrelationMatrixException(string message, Exception inner)
-                : base(message, inner)
-            {
-            }
         }
     }
 }

@@ -36,12 +36,22 @@ namespace MathNet.Numerics.Copulas
 {
     public class GaussianCopula : EllipticalCopula
     {
-        public GaussianCopula(Matrix<double> rho, CorrelationType correlationType, RandomSource randomSource = null) : base(rho, correlationType, randomSource, GaussianCopula.GetTransFormDist())
+        /// <summary>
+        /// Initializes a new instance of the GaussianCopula class.
+        /// </summary>
+        /// <param name="rho">The underlying correlation matrix. Must be symmetric and positive semi-definite.</param>
+        /// <param name="correlationType">The correlation type of the given correlation matrix.</param>
+        /// <param name="randomSource">The random number generator which is used to draw random samples.</param>
+        public GaussianCopula(Matrix<double> rho, CorrelationType correlationType, RandomSource randomSource = null) : base(rho, correlationType, randomSource, GaussianCopula.CreateTransformDist())
         {
             
         }
-        private GaussianCopula() : base(GaussianCopula.GetTransFormDist()) { }
+        private GaussianCopula() : base(GaussianCopula.CreateTransformDist()) { }
 
+        /// <summary>
+        /// Initializes a new instance of the InternalBuilder class to parametrize a Gaussian Copula.
+        /// </summary>
+        /// <returns>an InternalBuilder object to build a Gaussian Copula.</returns>
         public static ICorrelationType Builder()
         {
             return new InternalBuilder();
@@ -54,7 +64,7 @@ namespace MathNet.Numerics.Copulas
 
             public IBuild SetRho(Matrix<double> rho)
             {
-                var pearsonRho = EllipticalCopula.GetPearsonRho(rho, _instance.CorrelationType);
+                var pearsonRho = EllipticalCopula.ConvertToPearsonLinearCorrelationMatrix(rho, _instance.CorrelationType);
                 _instance.Rho = pearsonRho;
                 return this;
             }
@@ -81,7 +91,7 @@ namespace MathNet.Numerics.Copulas
             }
         }
 
-        private static IContinuousDistribution GetTransFormDist()
+        private static IContinuousDistribution CreateTransformDist()
         {
             return new Normal(0, 1);
         }

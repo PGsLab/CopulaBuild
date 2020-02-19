@@ -39,19 +39,12 @@ namespace MathNet.Numerics.Copulas
         public abstract double Generator(double t);
         public abstract double InverseGenerator(double t);
         public abstract double ThetafromKendall(double rho);
-        public sealed override System.Random RandomSource
-        {
-            get { return base.RandomSource; }
-            protected set { base.RandomSource = value; }
-        }
 
         protected ArchimedeanCopula()
         {
-            Dimension = 2;
         }
         protected ArchimedeanCopula(double theta, System.Random randomSource = null)
         {
-            Dimension = 2;
             Theta = theta;
             RandomSource = randomSource ?? SystemRandomSource.Default;
         }
